@@ -1,52 +1,59 @@
 //Do or die Jarvise!
 
 
-import React from "react";
-
-const Login = () => {
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
-  const[user, setUser]= useState({username: '', password: ''})
-    
-    const handleChange = event => {
-        setUser({
-            ...user, 
-            [event.target.name]: event.target.value
-        })
+class Login extends React.Component {
+  state = {
+    credentials: {
+      username: '',
+      password: ''
     }
-    const handleLogin = event => {
-      event.preventDefault()
-      axios.post('http://localhost:5000/api/login', user)
-      .then(response => 
-          localStorage.setItem('token', response.data.payload),
-              //console.log(response.data.payload)
-              props.history.push('/BubblePage')
-      )
-      .catch(error => console.log('error from login', error.response))
-  }
-  return (
-    <>
-      <h1>Welcome to the Bubble App!</h1>
-      <p>Build a login page here</p>
-      <form onSubmit={handleLogin}>
-            <label>UserName</label>
-            <input
-            type = 'text'
-            name= 'username'
-            // value = {user.username}
-            onChange={event => handleChange(event)}
-            />
-            <label>Password</label>
-            <input
-            type = 'password'
-            name = 'password'
-            // value = {user.password}
-            onChange = {event => handleChange(event)}
-            />
-            <button>Submit</button>
-        </form>
-    </>
-  );
-};
+  };
 
-export default Login;
+   handleChange = e => {
+    this.setState({
+      credentials: {
+        ...this.state.credentials,
+        [e.target.name]: e.target.value
+      }
+    });
+  };
+
+ handleSubmit = e => {
+    e.preventDefault();
+    axiosWithAuth()
+      .post('http://localhost:5000/api/login', this.state.credentials)
+      .then(res => {
+        localStorage.setItem('token', res.data.payload);
+        this.props.history.push('/');
+      })
+      .catch(err => console.log(err.response));
+  };
+
+   // dustin had, res.data.payload rather than token.
+  // if we were to make this into redux, it would be called as this.props.login
+  // rathen than this.login
+
+   render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <input
+            type="text"
+            name="username"
+            value={this.state.credentials.username}
+            onChange={this.handleChange}
+          />
+          <input
+            type="password"
+            name="password"
+            value={this.state.credentials.password}
+            onChange={this.handleChange}
+          />
+          <button>Let's Rock!!!</button>
+        </form>
+      </div>
+    );
+  }
+}
+
+ export default Login;
