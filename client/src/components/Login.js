@@ -1,6 +1,7 @@
 //Do or die Jarvise!
-
-
+import React from 'react';
+import axios from 'axios';
+import axiosWithAuth from '../utils/axiosWithAuth.js'
 class Login extends React.Component {
   state = {
     credentials: {
@@ -24,7 +25,7 @@ class Login extends React.Component {
       .post('http://localhost:5000/api/login', this.state.credentials)
       .then(res => {
         localStorage.setItem('token', res.data.payload);
-        this.props.history.push('/');
+        this.props.history.push('/bubbles');
       })
       .catch(err => console.log(err.response));
   };
@@ -36,16 +37,19 @@ class Login extends React.Component {
    render() {
     return (
       <div>
+       <h1>Welcome to the Bubble App!</h1>
         <form onSubmit={this.handleSubmit}>
           <input
             type="text"
             name="username"
+            placeholder="Username"
             value={this.state.credentials.username}
             onChange={this.handleChange}
           />
           <input
             type="password"
             name="password"
+            placeholder="Password"
             value={this.state.credentials.password}
             onChange={this.handleChange}
           />
